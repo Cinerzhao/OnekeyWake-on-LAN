@@ -30,11 +30,12 @@ jobs:
           rm pubspec.yaml
           mv temp_lib/pubspec.yaml .
           rm -rf temp_lib
-
-      - name: Add Internet Permission
+          
+      - name: Configure App Settings
         run: |
           sed -i 's/<application/<uses-permission android:name="android.permission.INTERNET"\/>\n    <application/' android/app/src/main/AndroidManifest.xml
-          echo "Permission injected."
+          sed -i 's/android:label="wol_app"/android:label="OnekeyWOL"/' android/app/src/main/AndroidManifest.xml
+
 
       - name: Get Dependencies
         run: flutter pub get
