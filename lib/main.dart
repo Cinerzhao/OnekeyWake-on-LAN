@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
+import 'dart:convert'; // [新增] 必须引入这个标准库
 
 void main() {
   runApp(const MaterialApp(home: WolPage()));
@@ -76,8 +77,9 @@ class _WolPageState extends State<WolPage> {
       _log = '发送命令...';
       final session = await client.execute(_command);
       
-      final output = await session.stdout.transform(const SystemEncoding().decoder).join();
-      final error = await session.stderr.transform(const SystemEncoding().decoder).join();
+      // [修改] 使用标准的 utf8.decodeStream 并在前面转换类型，兼容旧版本库
+      final output = await utf8.decodeStream(session.stdout.cast<List<int>>());
+      final error = await utf8.decodeStream(session.stderr.cast<List<int>>());
       
       setState(() {
         _log = '执行完成!\n$output\n$error';
